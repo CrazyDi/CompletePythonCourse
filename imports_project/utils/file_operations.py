@@ -6,3 +6,6 @@ def save_to_file(content, filename):
 def read_file(filename):
     with open(filename, 'r') as file:
         return file.read().split('/n')
+
+
+print('hello')
