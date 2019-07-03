@@ -1,15 +1,13 @@
-import csv
 import json
 
 
 csv_file = open('csv_file.txt', 'r')
-reader = csv.reader(csv_file)
-result_list = list(reader)
+result_list = [line.strip() for line in csv_file.readlines()]
 csv_file.close()
 
-result_json = []
+result_json = list()
 for line in result_list:
-    result_json.append({"club": line[0], "city": line[1], "country": line[2]})
+    result_json.append(dict(zip(["club", "country", "city"], [line.split(',')[0], line.split(',')[2], line.split(',')[1]])))
 
 json_file = open('json_file.txt', 'w')
 json.dump(result_json, json_file)
