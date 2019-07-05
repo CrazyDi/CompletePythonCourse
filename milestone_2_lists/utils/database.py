@@ -20,6 +20,5 @@ def mark_book_as_read(name):
 
 
 def delete_book(name):
-    for book in books:
-        if book['name'] == name:
-            books.remove(book)
+    global books
+    books = [book for book in books if book['name'] != name]
