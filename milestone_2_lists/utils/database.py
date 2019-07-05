@@ -1,49 +1,43 @@
-import json
-import os.path
-
+from .database_connection import DatabaseConnection
 
 """
-Concerned with storing and retrieving books from a list.
+Concerned with storing and retrieving books from a josn file.
 """
 
 
-def read_from_file():
-    books = []
-    if os.path.exists('books.json'):
-        with open('books.json', 'r') as file:
-            books = json.load(file)
+def create_book_table():
+    with DatabaseConnection('data.db') as connection:
+        cursor = connection.cursor()
+
+        cursor.execute('CREATE TABLE IF NOT EXISTS books (name text primary key, author text , read integer)')
+
+
+def add_book(name, author):
+    with DatabaseConnection('data.db') as connection:
+        cursor = connection.cursor()
+
+        cursor.execute('INSERT INTO books (name, author, read) VALUES (?, ?, 0)', (name, author))
+
+
+def get_all_books():
+    with DatabaseConnection('data.db') as connection:
+        cursor = connection.cursor()
+
+        cursor.execute('SELECT * FROM books')
+        books = [{'name': row[0], 'author': row[1], 'read': row[2]} for row in cursor.fetchall()]
 
     return books
 
 
-def write_to_file(books):
-    with open('books.json', 'w') as file:
-        json.dump(books, file)
-
-
-def add_book(name, author):
-    books = read_from_file()
-
-    books.append({'name': name, 'author': author, 'read': False})
-
-    write_to_file(books)
-
-
-def get_all_books():
-    return read_from_file()
-
-
 def mark_book_as_read(name):
-    books = read_from_file()
+    with DatabaseConnection('data.db') as connection:
+        cursor = connection.cursor()
 
-    for book in books:
-        if book['name'] == name:
-            book['read'] = True
-
-    write_to_file(books)
+        cursor.execute('UPDATE books SET read=1 where name=?',(name,))
 
 
 def delete_book(name):
-    books = read_from_file()
-    books = [book for book in books if book['name'] != name]
-    write_to_file(books)
+    with DatabaseConnection('data.db') as connection:
+        cursor = connection.cursor()
+
+        cursor.execute('DELETE FROM books where name=?', (name,))
