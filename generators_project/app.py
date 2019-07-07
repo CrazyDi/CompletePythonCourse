@@ -37,6 +37,15 @@ class AnotherIterable:
     def __getitem__(self, item):
         return self.cars[item]
 
-
+"""
 for car in AnotherIterable():
     print(car)
+"""
+
+
+def starts_with_r(friend):
+    return friend.startwith('R')
+
+
+friends = ['Rolf', 'Jose', 'Randy', 'Anna', 'Mary']
+starts_with_r = filter(starts_with_r, friends)
